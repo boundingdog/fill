@@ -1,0 +1,24 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-compass": "^1.0.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "^0.6.0",
+    "grunt-contrib-watch": "~0.5.3"
+  },
+  "name": "fill",
+  "title": "Fill",
+  "version": "0.1.0",
+  "description": "A lightweight JavaScript layout library.",
+  "author": {
+    "name": "Andrew Scanlon"
+  },
+  "license": "MIT",
+  "srcDir": "../src/",
+  "buildDir": "../build/",
+  "distDir": "../dist/"
+}

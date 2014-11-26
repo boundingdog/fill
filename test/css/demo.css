@@ -1,0 +1,21 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #DDD; }
+
+/**
+ * The full page container
+ */
+#fill-main {
+  width: 100%;
+  height: 100%; }
+  #fill-main .fill-component-wrapper {
+    height: 100%;
+    background-color: white;
+    border: 1px solid #CCC; }
+  #fill-main .fill-col-0 {
+    width: 50%; }
+  #fill-main .fill-row-1 {
+    height: 50%; }
