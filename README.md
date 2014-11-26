@@ -6,6 +6,6 @@ Fill is a lightweight JavaScript library used to create full page layouts with m
 ### Using Fill
 Coming Soon
 
-### License
+### Copyright & License
 
-MIT license - http://www.opensource.org/licenses/mit-license.php
+All materials copyright &copy; 2014, boundingdog, LLC. Code released under [MIT license] (LICENSE).
