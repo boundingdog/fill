@@ -13,11 +13,20 @@
             <div class="fill-component" data-fill="row: 2; col: 0"><label>Lower left</label></div>
             <div class="fill-component" data-fill="row: 2; col: 1; colSpan:2"><label>Lower right</label></div>
         </div>
-        <script type="application/javascript" src="../src/vendor/jquery-1.11.1.min.js"></script>
-        <script type="application/javascript" src="../dist/fill.min.js"></script>
+        <script type="application/javascript" src="../src/vendor/requirejs-2.1.15.min.js"></script>
         <script>
-            $(document).ready(function(){
-                var fill = $(".fill-container").fill({ padding: "1em" });
+            requirejs.config({
+                paths : {
+                    'jquery' : '../src/vendor/jquery-1.11.1.min',
+                    'jquery.fill' : '../dist/fill.min'
+                },
+                shim : {
+                    'jquery.fill' : ['jquery']
+                }
+            });
+
+            require(['jquery','jquery.fill'], function($){
+                $(".fill-container").fill({ padding: "1em" });
             });
         </script>
     </body>

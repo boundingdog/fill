@@ -15,7 +15,8 @@
   "version": "0.1.0",
   "description": "A lightweight JavaScript layout library.",
   "author": {
-    "name": "Andrew Scanlon"
+    "name": "Andrew Scanlon",
+    "company": "boundingdog, LLC"
   },
   "license": "MIT",
   "srcDir": "../src/",

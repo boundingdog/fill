@@ -8,8 +8,8 @@ module.exports = function(grunt) {
     banner: '/**\n'+
     		'  * <%= pkg.title %> - <%= pkg.description %>\n' +
     		'  *  ver. <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)\n' +
-	        '  *  (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
-      		'  *  Licensed <%= pkg.license %> <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+	        '  *  (c) 2014-<%= grunt.template.today("yyyy") %> <%= pkg.author.company %>\n' +
+      		'  *  Licensed <%= pkg.license %> <%= grunt.template.today("yyyy") %> <%= pkg.author.company %>\n' +
       		'  **/\n',
     // Task configuration.
     clean :{
