@@ -48,7 +48,7 @@ fill.classes = fill.classes || {};
 
         grid = {};
         colCnt = 0;
-        components = $("> .fill-component", this._el);
+        components = $("> [data-fill]", this._el);
         for(var i=0; i<components.length; i++){
 
             comp = new fill.classes.FillComponent($(components[i]));

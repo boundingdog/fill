@@ -5,16 +5,16 @@ Fill is a lightweight JavaScript library used to create full page layouts with m
 
 ##### Layouts
 
-Fill uses a row/column structure to define and position components (content sections) in the layout. To define a component, tag the DOM element with the ````fill-component```` class and set a 0-based row and column index in the ````data-fill```` attribute.
+Fill uses a row/column structure to define and position components (content sections) in the layout. To define a component, tag the DOM element with a ````data-fill```` attribute and set a 0-based row and column index.
 
 The example below defines a 4 section layout where each section takes up 1/4 of the parent div:
 
 ````html
 <div id="parent" class="fill-container">
-    <div class="fill-component" data-fill="row: 0; col: 0"><label>Upper left</label></div>
-    <div class="fill-component" data-fill="row: 0; col: 1"><label>Upper right</label></div>
-    <div class="fill-component" data-fill="row: 1; col: 0"><label>Lower left</label></div>
-    <div class="fill-component" data-fill="row: 1; col: 1"><label>Lower right</label></div>
+    <div data-fill="row: 0; col: 0"><label>Upper left</label></div>
+    <div data-fill="row: 0; col: 1"><label>Upper right</label></div>
+    <div data-fill="row: 1; col: 0"><label>Lower left</label></div>
+    <div data-fill="row: 1; col: 1"><label>Lower right</label></div>
 </div>
 
 <script>
@@ -27,12 +27,12 @@ The example below defines a 4 section layout where each section takes up 1/4 of 
 Sections may span mutliple rows and columns using the ````rowSpan```` and ````colSpan```` properties:
 ````html
 <div id="foo-parent" class="fill-container">
-    <div class="fill-component" data-fill="row: 0; col: 0"><label>Upper left</label></div>
-    <div class="fill-component" data-fill="row: 0; col: 1"><label>Upper right</label></div>
-    <div class="fill-component" data-fill="row: 1; col: 0"><label>Lower left</label></div>
-    <div class="fill-component" data-fill="row: 1; col: 1"><label>Lower right</label></div>
-    <div class="fill-component" data-fill="row: 2; col: 1; colSpan: 2"><label>Bottom row</label></div>
-    <div class="fill-component" data-fill="row: 0; col: 2; rowSpan: 3"><label>Right column</label></div>
+    <div data-fill="row: 0; col: 0"><label>Upper left</label></div>
+    <div data-fill="row: 0; col: 1"><label>Upper right</label></div>
+    <div data-fill="row: 1; col: 0"><label>Lower left</label></div>
+    <div data-fill="row: 1; col: 1"><label>Lower right</label></div>
+    <div data-fill="row: 2; col: 1; colSpan: 2"><label>Bottom row</label></div>
+    <div data-fill="row: 0; col: 2; rowSpan: 3"><label>Right column</label></div>
 </div>
 ````
 

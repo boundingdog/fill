@@ -3,7 +3,7 @@ fill.classes = fill.classes || {};
 
 (function($){
 
-    var DATA_REGEX = /\b([\w|-]+)\s*:\s*([\w|"|']+)\s*;?/g;
+    var DATA_REGEX = /\b([\w|-]+)\s*:\s*([\w|"|'|\*]+)\s*;?/g;
 
     var fillComponent = function(el, options){
         this.el = el;
