@@ -1,3 +1,4 @@
 src/vendor
 grunt/node_modules
 .sass-cache
+.idea
