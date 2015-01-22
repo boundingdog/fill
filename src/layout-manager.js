@@ -109,8 +109,10 @@ fill.classes = fill.classes || {};
                 //Grab a reference to the next cell. Not all spaces in the grid will be populated (because of
                 //multi spanning cols/rows or just left empty). If this is a blank cell, skip this loop iteration.
                 cell = this._grid[row][col];
-                if (typeof cell === "undefined" || null===cell)
+                if (typeof cell === "undefined" || null===cell) {
+                    x += this._cellCalculator.getColWidth(col);
                     continue;
+                }
 
                 cellWid = this._cellCalculator.getColWidth(col);
                 for(var tmp = col+1; tmp<col+cell.get("colSpan"); tmp++) {
