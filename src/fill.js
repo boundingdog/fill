@@ -7,6 +7,7 @@ var fill = fill || {};
     var plugin = function() {
             var el, plugin, args, action, options;
 
+            //var start = window.performance.now();
 
             //Grab any arguments passed into the fill function and convert to array. If the 1st argument is a string,
             //then the caller is requesting some action to be performed on an existance instance of fill (refresh,
@@ -36,6 +37,9 @@ var fill = fill || {};
                         el.removeData("fill-pi");
                 }
             })
+
+            //var end = window.performance.now();
+            //console.log("Fill plug-in time: " + (end-start) + "millis");
 
             return (this);
         }

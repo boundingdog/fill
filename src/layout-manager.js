@@ -51,7 +51,7 @@ fill.classes = fill.classes || {};
         components = $("> [data-fill]", this._el);
         for(var i=0; i<components.length; i++){
 
-            comp = new fill.classes.FillComponent($(components[i]));
+            comp = new fill.classes.FillComponent($(components[i]), { contentClass : this._config.contentClass} );
             row = comp.get("row");
             col = comp.get("col");
             if (null===row || null===col|| 0>row || 0>col) {

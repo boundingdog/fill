@@ -17,7 +17,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     fillComponent.prototype._init = function(options){
-        var str, defaults;
+        var str, contentClass, defaults;
 
         //Save off the original style attributes so we can reset things properly if
         //destroy is called
@@ -25,8 +25,7 @@ fill.classes = fill.classes || {};
 
         this.el.css( { "position" : "absolute" });
 
-        //TODO are any outside options actually passed in?
-        defaults = { row : -1, col: -1, rowSpan: 1, colSpan: 1 };
+        defaults = { row : -1, col: -1, rowSpan: 1, colSpan: 1, contentClass : "" };
         this._properties = $.extend({}, defaults, options);
 
 
@@ -39,11 +38,16 @@ fill.classes = fill.classes || {};
             }
         }
         //alert(JSON.stringify(this._properties));
+        //If the caller supplied a content class to make styling things a little easier, apply it to the component
+        //wrapper here
+        contentClass = "";
+        if (this._properties.contentClass && "" !== this._properties.contentClass.trim())
+            contentClass = this._properties.contentClass;
 
         //Wrap the fill component element in a div. This will allow us to apply padding to the components and still make
         //it easy for the user to stylize the original element. Borders, for example would be applied on the outside edges
         //of the padding (negating the purpose of the padding) if we don't do this wrapping.
-        this.el.wrapInner("<div class='fill-component-wrapper'></div>").children().first().css( { "-webkit-box-sizing": "border-box",
+        this.el.wrapInner("<div class='fill-component-wrapper " + contentClass + "'></div>").children().first().css( { "-webkit-box-sizing": "border-box",
                                                                                                     "-moz-box-sizing": "border-box",
                                                                                                     "box-sizing" : "border-box" });
     };
