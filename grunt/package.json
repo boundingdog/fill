@@ -12,11 +12,13 @@
   },
   "name": "fill",
   "title": "Fill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A lightweight JavaScript layout library.",
+  "gitUrl" : "https://github.com/boundingdog/fill",
   "author": {
     "name": "Andrew Scanlon",
-    "company": "boundingdog, LLC"
+    "company": "boundingdog, LLC",
+    "url": "http://www.boundingdog.com"
   },
   "license": "MIT",
   "srcDir": "../src/",

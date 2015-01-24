@@ -1,7 +1,7 @@
 Fill
 ====
 
-Fill is a lightweight JavaScript library used to create full page layouts with minimal HTML markup and CSS.
+Fill is a lightweight JavaScript library used to create full-page cross-browser layouts with minimal HTML markup and CSS.
 
 ##### Layouts
 

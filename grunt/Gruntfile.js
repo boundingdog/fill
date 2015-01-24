@@ -7,9 +7,11 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     banner: '/**\n'+
     		'  * <%= pkg.title %> - <%= pkg.description %>\n' +
-    		'  *  ver. <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)\n' +
-	        '  *  (c) 2014-<%= grunt.template.today("yyyy") %> <%= pkg.author.company %>\n' +
-      		'  *  Licensed <%= pkg.license %> <%= grunt.template.today("yyyy") %> <%= pkg.author.company %>\n' +
+    		'  * ver. <%= pkg.version %> (<%= grunt.template.today("yyyy-mm-dd") %>)\n' +
+            '  * git: <%= pkg.gitUrl %>\n' +
+            '  *\n' +
+	        '  * (c) 2014-<%= grunt.template.today("yyyy") %> <%= pkg.author.company %>\n' +
+      		'  * Licensed <%= pkg.license %> <%= grunt.template.today("yyyy") %> <%= pkg.author.company %> (<%= pkg.author.url %>)\n' +
       		'  **/\n',
     // Task configuration.
     clean :{
