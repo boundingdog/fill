@@ -113,6 +113,8 @@ fill.classes = fill.classes || {};
             this.el.attr("style", this._origStyle);
         else
             this.el.removeAttr("style");
+        //Remove the convenience edge classes we may have added
+        this.el.removeClass("fill fill-top fill-right fill-bottom fill-left");
     };
 
     fill.classes.FillComponent = fillComponent;
