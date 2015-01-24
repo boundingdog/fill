@@ -5,18 +5,18 @@ fill.classes = fill.classes || {};
 
     var DATA_REGEX = /\b([\w|-]+)\s*:\s*([\w|"|'|\*]+)\s*;?/g;
 
-    var fillComponent = function(el, options){
+    var region = function(el, options){
         this.el = el;
         this._init(options);
     };
 
     /**
-     * Initializes the FillComponent which is pretty much just merging the
+     * Initializes the Region which is pretty much just merging the
      * supplied option set with the defaults
      * @param options
      * @private
      */
-    fillComponent.prototype._init = function(options){
+    region.prototype._init = function(options){
         var str, contentClass, defaults;
 
         //Save off the original style attributes so we can reset things properly if
@@ -41,16 +41,16 @@ fill.classes = fill.classes || {};
             }
         }
         //alert(JSON.stringify(this._properties));
-        //If the caller supplied a content class to make styling things a little easier, apply it to the component
+        //If the caller supplied a content class to make styling things a little easier, apply it to the region
         //wrapper here
         contentClass = "";
         if (this._properties.contentClass && "" !== this._properties.contentClass.trim())
             contentClass = this._properties.contentClass;
 
-        //Wrap the fill component element in a div. This will allow us to apply padding to the components and still make
+        //Wrap the fill region element in a div. This will allow us to apply padding to the regions and still make
         //it easy for the user to stylize the original element. Borders, for example would be applied on the outside edges
         //of the padding (negating the purpose of the padding) if we don't do this wrapping.
-        this.el.wrapInner("<div class='fill-component-wrapper " + contentClass + "'></div>").children().first().css( { "-webkit-box-sizing": "border-box",
+        this.el.wrapInner("<div class='fill-region-wrapper " + contentClass + "'></div>").children().first().css( { "-webkit-box-sizing": "border-box",
                                                                                                     "-moz-box-sizing": "border-box",
                                                                                                     "box-sizing" : "border-box" });
     };
@@ -58,7 +58,7 @@ fill.classes = fill.classes || {};
     /**
      * Property getter
      */
-    fillComponent.prototype.get = function(name){
+    region.prototype.get = function(name){
 
         if (typeof this._properties[name] !== 'undefined')
             return(this._properties[name]);
@@ -66,13 +66,13 @@ fill.classes = fill.classes || {};
     };
 
     /**
-     * Sets flags indicating if this is an edge component and which edges it lies on
+     * Sets flags indicating if this is an edge region and which edges it lies on
      * @param top
      * @param right
      * @param bottom
      * @param left
      */
-    fillComponent.prototype.setEdges = function(top, right, bottom, left){
+    region.prototype.setEdges = function(top, right, bottom, left){
         var removeClass;
 
         this._properties.top = top;
@@ -81,7 +81,7 @@ fill.classes = fill.classes || {};
         this._properties.left = left;
 
         //Add edge classes to this top level element. This is a convenience to enable
-        //users to style these components a little easier (for example custom padding)
+        //users to style these regions a little easier (for example custom padding)
         this.el.addClass("fill"
                             + (top ? " fill-top" : "")
                             + (right ? " fill-right" : "")
@@ -102,12 +102,12 @@ fill.classes = fill.classes || {};
     };
 
     /**
-     * Reverts the component to its original state (before the fill plugin was applied)
+     * Reverts the region to its original state (before the fill plugin was applied)
      */
-    fillComponent.prototype.destroy = function(){
+    region.prototype.destroy = function(){
 
-        //Remove the .fill-component-wrapper we added at init time.
-        this.el.html($("> .fill-component-wrapper", this.el).html());
+        //Remove the .fill-region-wrapper we added at init time.
+        this.el.html($("> .fill-region-wrapper", this.el).html());
         //Remove the css we applied (as a style attribute) to position/size everything
         if (this._origStyle)
             this.el.attr("style", this._origStyle);
@@ -117,6 +117,6 @@ fill.classes = fill.classes || {};
         this.el.removeClass("fill fill-top fill-right fill-bottom fill-left");
     };
 
-    fill.classes.FillComponent = fillComponent;
+    fill.classes.Region = region;
 
 })(jQuery);

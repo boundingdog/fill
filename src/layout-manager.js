@@ -42,7 +42,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._buildLayout = function(){
-        var components, comp, row, col, grid, rows, colCnt;
+        var regions, region, row, col, grid, rows, colCnt;
 
         this._width = this._el.width();
         this._height = this._el.height();
@@ -50,14 +50,14 @@ fill.classes = fill.classes || {};
 
         grid = {};
         colCnt = 0;
-        components = $("> [data-fill]", this._el);
-        for(var i=0; i<components.length; i++){
+        regions = $("> [data-fill]", this._el);
+        for(var i=0; i<regions.length; i++){
 
-            comp = new fill.classes.FillComponent($(components[i]), { contentClass : this._config.contentClass} );
-            row = comp.get("row");
-            col = comp.get("col");
+            region = new fill.classes.Region($(regions[i]), { contentClass : this._config.contentClass} );
+            row = region.get("row");
+            col = region.get("col");
             if (null===row || null===col|| 0>row || 0>col) {
-                console.warn("Fill component does not have a row and col defined. Component will be skipped");
+                console.warn("Fill region does not have a row and col defined. Region will be skipped");
                 continue;
             }
 
@@ -67,12 +67,12 @@ fill.classes = fill.classes || {};
             }
 
             if (grid[row][col]){
-                console.warn("Duplicate cell defined for fill component ("+row + "," + col +"). Component will be skipped.");
+                console.warn("Duplicate region defined for fill region ("+row + "," + col +"). Region will be skipped.");
                 continue;
             }
 
             this._cellCalculator.addCell(row, col);
-            grid[row][col] = comp;
+            grid[row][col] = region;
 
             //Increment the grid's max column count if the # of columns in this row is greater than any existing row.
             if (colCnt < Object.keys(grid[row]).length)
@@ -87,13 +87,13 @@ fill.classes = fill.classes || {};
         for(var row in grid){
             this._grid[row] = new Array(colCnt);
             for(var col in grid[row]){
-                comp = grid[row][col];
-                comp.setEdges(0==row, //Top
-                                (col - 1 + comp.get("colSpan"))==(colCnt-1), //Right
-                                (row - 1 + comp.get("rowSpan"))==(rows.length-1), //Bottom
+                region = grid[row][col];
+                region.setEdges(0==row, //Top
+                                (col - 1 + region.get("colSpan"))==(colCnt-1), //Right
+                                (row - 1 + region.get("rowSpan"))==(rows.length-1), //Bottom
                                 0==col); //Left
 
-                this._grid[row][col] = comp;
+                this._grid[row][col] = region;
             }
         }
     };
@@ -103,7 +103,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._renderLayout = function(){
-        var cell, x, y, cellWid, cellHt, args, pixelPadding, padding;
+        var region, x, y, regionWid, regionHt, args, pixelPadding, padding;
 
         //Skip out of this function if there's nothing in the grid
         if (!this._grid || 0===this._grid.length)
@@ -116,39 +116,39 @@ fill.classes = fill.classes || {};
             x = 0;
             for(var col=0; col<this._grid[row].length; col++) {
 
-                //Grab a reference to the next cell. Not all spaces in the grid will be populated (because of
-                //multi spanning cols/rows or just left empty). If this is a blank cell, skip this loop iteration.
-                cell = this._grid[row][col];
-                if (typeof cell === "undefined" || null===cell) {
+                //Grab a reference to the next region. Not all spaces in the grid will be populated (because of
+                //multi spanning cols/rows or just left empty). If this is a blank region, skip this loop iteration.
+                region = this._grid[row][col];
+                if (typeof region === "undefined" || null===region) {
                     x += this._cellCalculator.getColWidth(col);
                     continue;
                 }
 
-                cellWid = this._cellCalculator.getColWidth(col);
-                for(var tmp = col+1; tmp<col+cell.get("colSpan"); tmp++) {
-                    cellWid += this._cellCalculator.getColWidth(tmp);
+                regionWid = this._cellCalculator.getColWidth(col);
+                for(var tmp = col+1; tmp<col+region.get("colSpan"); tmp++) {
+                    regionWid += this._cellCalculator.getColWidth(tmp);
                 }
-                cellHt = this._cellCalculator.getRowHeight(row);
-                for(var tmp = row+1; tmp<row+cell.get("rowSpan"); tmp++) {
-                    cellHt += this._cellCalculator.getRowHeight(tmp);
+                regionHt = this._cellCalculator.getRowHeight(row);
+                for(var tmp = row+1; tmp<row+region.get("rowSpan"); tmp++) {
+                    regionHt += this._cellCalculator.getRowHeight(tmp);
                 }
 
                 args = { top: y+"px",
                     left: x +"px",
-                    width : (cellWid - pixelPadding - (0===col ? pixelPadding : 0) ) + "px",
-                    height: (cellHt - pixelPadding - (0===row ? pixelPadding : 0)) +"px" };
+                    width : (regionWid - pixelPadding - (0===col ? pixelPadding : 0) ) + "px",
+                    height: (regionHt - pixelPadding - (0===row ? pixelPadding : 0)) +"px" };
 
-                //If this cell is a right or bottom edge, remove the width/height and set the
+                //If this region is a right or bottom edge, remove the width/height and set the
                 //right / bottom properties. This mimimizes the effect of an incorrectly reported
                 //container size as referenced in issue #2.
-                if (cell.get("right"))
+                if (region.get("right"))
                 {
                     delete args.width;
-                    args.right = this._width - (x + cellWid) + "px";
+                    args.right = this._width - (x + regionWid) + "px";
                 }
-                if (cell.get("bottom")){
+                if (region.get("bottom")){
                     delete args.height;
-                    args.bottom = this._height - (y + cellHt) + "px";
+                    args.bottom = this._height - (y + regionHt) + "px";
                 }
 
                 if (0!==pixelPadding)
@@ -162,7 +162,7 @@ fill.classes = fill.classes || {};
                     args.padding = padding;
                 }
                 //alert(JSON.stringify(args));
-                cell.el.css(args);
+                region.el.css(args);
 
                 x += this._cellCalculator.getColWidth(col);
             }
@@ -215,18 +215,18 @@ fill.classes = fill.classes || {};
      * Reverts the fill container and components to their original state (before the fill plugin was applied)
      */
     layoutManager.prototype.destroy = function(){
-        var cell;
+        var region;
 
         //Call destroy on each component in the grid
         if (0<this._grid.length) {
             for (var i = 0; i < this._grid.length; i++) {
                 for (var j = 0; j < this._grid[i].length; j++) {
 
-                    cell = this._grid[i][j];
-                    if (typeof cell === "undefined" || null===cell)
+                    region = this._grid[i][j];
+                    if (typeof region === "undefined" || null===region)
                         continue;
 
-                    cell.destroy();
+                    region.destroy();
                 }
             }
         }

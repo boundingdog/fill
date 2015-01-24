@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         sourceMap : true
       },
       dist: {
-        src: [	'<%= pkg.srcDir %>/fill-component.js',
+        src: [	'<%= pkg.srcDir %>/region.js',
 		        '<%= pkg.srcDir %>/window-resize-listener.js',
         		'<%= pkg.srcDir %>/cell-size-calculator.js',
 		        '<%= pkg.srcDir %>/layout-manager.js',
