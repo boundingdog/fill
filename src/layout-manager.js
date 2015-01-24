@@ -3,7 +3,6 @@ fill.classes = fill.classes || {};
 
 (function($){
 
-    //TODO AMD?
     var layoutManager = function(el, options){
         var defaults = { padding: 0 };
 
@@ -18,6 +17,9 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._init = function(){
+
+        //Convert the supplied padding value to pixels (if not already)
+        this._config.pixelPadding = this._getPaddingInPixels(this._config.padding);
 
         //Save off the original style attributes so we can revert things properly when
         //destroy is called
@@ -40,7 +42,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._buildLayout = function(){
-        var components, comp, row, col, grid, colCnt;
+        var components, comp, row, col, grid, rows, colCnt;
 
         this._width = this._el.width();
         this._height = this._el.height();
@@ -80,12 +82,18 @@ fill.classes = fill.classes || {};
         //TODO sort row and cols to make sure they are in correct order
         //TODO normalize the row / cols in case the user doesn't specify them in incremental order
         //Convert the local grid variable from an Object to a multidimensional array
-        this._grid = new Array(Object.keys(grid));
+        rows = Object.keys(grid);
+        this._grid = new Array(rows);
         for(var row in grid){
-
             this._grid[row] = new Array(colCnt);
             for(var col in grid[row]){
-                this._grid[row][col] = grid[row][col];
+                comp = grid[row][col];
+                comp.setEdges(0==row, //Top
+                                (col - 1 + comp.get("colSpan"))==(colCnt-1), //Right
+                                (row - 1 + comp.get("rowSpan"))==(rows.length-1), //Bottom
+                                0==col); //Left
+
+                this._grid[row][col] = comp;
             }
         }
     };
@@ -95,11 +103,13 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._renderLayout = function(){
-        var cell, x, y, cellWid, cellHt, args, padding;
+        var cell, x, y, cellWid, cellHt, args, pixelPadding, padding;
 
         //Skip out of this function if there's nothing in the grid
         if (!this._grid || 0===this._grid.length)
             return(0);
+
+        pixelPadding = this._config.pixelPadding;
 
         y = 0;
         for(var row=0; row<this._grid.length; row++){
@@ -124,25 +134,62 @@ fill.classes = fill.classes || {};
                 }
 
                 args = { top: y+"px",
-                                left: x +"px",
-                                right: this._width - (x + cellWid) + "px",
-                                bottom: this._height - (y + cellHt) + "px" };
-                if (0!==this._config.padding)
+                    left: x +"px",
+                    width : (cellWid - pixelPadding - (0===col ? pixelPadding : 0) ) + "px",
+                    height: (cellHt - pixelPadding - (0===row ? pixelPadding : 0)) +"px" };
+
+                //If this cell is a right or bottom edge, remove the width/height and set the
+                //right / bottom properties. This mimimizes the effect of an incorrectly reported
+                //container size as referenced in issue #2.
+                if (cell.get("right"))
+                {
+                    delete args.width;
+                    args.right = this._width - (x + cellWid) + "px";
+                }
+                if (cell.get("bottom")){
+                    delete args.height;
+                    args.bottom = this._height - (y + cellHt) + "px";
+                }
+
+                if (0!==pixelPadding)
                 {
                     //Add a uniform padding to all the components. We can't simply add a single padding to the component
                     //as a whole because that would result in the internal margins being 2x the size of the borders on
                     //the edges. So add a padding to the right and bottom side of every component. Also add a top
                     //padding if the component is in the first row and a left padding if in the first col
-                    padding = (0==row ? this._config.padding : "0") + " " + this._config.padding + " "; //Top and Right padding
-                    padding += this._config.padding + " " + (0==col ? this._config.padding : "0"); //Bottom and Left padding
+                    padding = (0===row ? pixelPadding : 0) + "px " + pixelPadding + "px "; //Top and Right padding
+                    padding += pixelPadding + "px " + (0===col ? pixelPadding : "0") + "px"; //Bottom and Left padding
                     args.padding = padding;
                 }
+                //alert(JSON.stringify(args));
                 cell.el.css(args);
 
                 x += this._cellCalculator.getColWidth(col);
             }
             y += this._cellCalculator.getRowHeight(row);
         }
+    };
+
+    /**
+     * Returns the configured padding in pixels (as an integer)
+     * @private
+     */
+    layoutManager.prototype._getPaddingInPixels = function(padding){
+        var tempEl, pixel = padding;
+        if("string" === typeof(padding)){
+            //If the value was already supplied as pixels, just parse the string and return the value
+            //as an integer
+            if (padding.indexOf("px") === (padding.length-2)){
+                pixel = parseInt(padding.substr(0, padding.length-2), 10);
+            } else {
+                //If its not supplied in pixels, we'll have to add a temporary element to the container
+                //and set the size to see the pixel value when applied to the DOM
+                tempEl = $("<div style='position:absolute;visible:visible;width:"+padding+"'></div>").appendTo(this._el);
+                pixel = tempEl.width();
+                tempEl.remove();
+            }
+        }
+        return(pixel);
     };
 
     layoutManager.prototype.refresh = function(){
@@ -155,7 +202,7 @@ fill.classes = fill.classes || {};
         if (newWid !== this._width || newHt !== this._height) {
 
             this._cellCalculator.calculate(newWid !== this._width ? newWid : -1,
-                                            newHt !== this._height ? newHt : -1);
+                newHt !== this._height ? newHt : -1);
 
             this._width = newWid;
             this._height = newHt;

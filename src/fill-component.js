@@ -25,7 +25,10 @@ fill.classes = fill.classes || {};
 
         this.el.css( { "position" : "absolute" });
 
-        defaults = { row : -1, col: -1, rowSpan: 1, colSpan: 1, contentClass : "" };
+        defaults = { row : -1, col: -1,
+                        rowSpan: 1, colSpan: 1,
+                        contentClass : "",
+                        top : false, right: false, bottom: false, left: false };
         this._properties = $.extend({}, defaults, options);
 
 
@@ -60,6 +63,42 @@ fill.classes = fill.classes || {};
         if (typeof this._properties[name] !== 'undefined')
             return(this._properties[name]);
         return(null);
+    };
+
+    /**
+     * Sets flags indicating if this is an edge component and which edges it lies on
+     * @param top
+     * @param right
+     * @param bottom
+     * @param left
+     */
+    fillComponent.prototype.setEdges = function(top, right, bottom, left){
+        var removeClass;
+
+        this._properties.top = top;
+        this._properties.right = right;
+        this._properties.bottom = bottom;
+        this._properties.left = left;
+
+        //Add edge classes to this top level element. This is a convenience to enable
+        //users to style these components a little easier (for example custom padding)
+        this.el.addClass("fill"
+                            + (top ? " fill-top" : "")
+                            + (right ? " fill-right" : "")
+                            + (bottom ? " fill-bottom" : "")
+                            + (left ? " fill-left" : ""));
+
+        //Remove the edge classes in case they were set previously
+        removeClass = "";
+        if (!top)
+            removeClass += "fill-top ";
+        if (!right)
+            removeClass += "fill-right ";
+        if (!bottom)
+            removeClass += "fill-bottom ";
+        if (!left)
+            removeClass += "fill-left ";
+        this.el.removeClass(removeClass);
     };
 
     /**
