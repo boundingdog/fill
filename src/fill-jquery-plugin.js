@@ -18,10 +18,26 @@ fill.classes = fill.classes || {};
 
         this._el = el;
         this._config = config;
+
+        this._registerEventListeners();
         this._layoutManager = new fill.classes.LayoutManager(el, config);
 
         if (this._config.autoRefresh)
             this._resizeHandlerId = fill.classes.WindowResizeListener.addHandler(function(){ self._refresh(); });
+
+        //if (this._config.create) {
+        //    var evt = $.Event('create');
+        //    this._config.create(evt, {});
+        //}
+    };
+
+    /**
+     * Adds any callback supplied in the options to the element as jquery event listeners
+     * @private
+     */
+    plugin.prototype._registerEventListeners = function(){
+        if (this._config.create)
+            this._el.on("fillcreate.fill-internal", this._config.create);
     };
 
     /**

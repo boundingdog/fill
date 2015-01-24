@@ -35,6 +35,9 @@ fill.classes = fill.classes || {};
         //render the layout.
         this._cellCalculator.calculate(this._width, this._height);
         this._renderLayout();
+
+        //Fire off an event letting anyone listening that the layout has been applied
+        this._el.trigger("fillcreate", { });
     };
 
     /**
