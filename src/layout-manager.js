@@ -166,7 +166,7 @@ fill.classes = fill.classes || {};
                 }
                 //alert(JSON.stringify(args));
                 region.el.css(args);
-                region.setSize(regionWid, regionHt);
+                region.fireResizeEvent();
 
                 x += this._cellCalculator.getColWidth(col);
             }

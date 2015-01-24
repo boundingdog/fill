@@ -102,13 +102,13 @@ fill.classes = fill.classes || {};
     };
 
     /**
-     * Sets the calculated width and height so the region can trigger a
-     * resize event in case something has changed
-     * @param width
-     * @param height
+     * Fires a resize event if the region's width or height has changed.
      */
-    region.prototype.setSize = function(width, height){
-        var data;
+    region.prototype.fireResizeEvent = function(){
+        var width, height;
+
+        width = this.el.width();
+        height = this.el.height();
 
         //Populate the event with the old dimensions before we store the new ones
         data = {
@@ -130,6 +130,8 @@ fill.classes = fill.classes || {};
 
             this.el.trigger("fillresize", data);
         }
+
+        console.log("Row=" + this._properties.row + " Col=" + this._properties.col + " Size=" + width+"x" + height);
     };
 
     /**
