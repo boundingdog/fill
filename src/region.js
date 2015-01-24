@@ -102,6 +102,37 @@ fill.classes = fill.classes || {};
     };
 
     /**
+     * Sets the calculated width and height so the region can trigger a
+     * resize event in case something has changed
+     * @param width
+     * @param height
+     */
+    region.prototype.setSize = function(width, height){
+        var data;
+
+        //Populate the event with the old dimensions before we store the new ones
+        data = {
+                    previous : { width: this._properties.width,
+                                    height: this._properties.height },
+                    current : {}
+                };
+
+        this._properties.width = width;
+        this._properties.height = height;
+
+        //Check to see if anything actually changed before firing off the resize event.
+        // Also don't fire a resize event if this is the first time the width and height are
+        //being set
+        if (undefined !== data.previous.width && (data.previous.width !== width || data.previous.height !== height)) {
+
+            data.current.width = width;
+            data.current.height = height;
+
+            this.el.trigger("fillresize", data);
+        }
+    };
+
+    /**
      * Reverts the region to its original state (before the fill plugin was applied)
      */
     region.prototype.destroy = function(){

@@ -33,6 +33,8 @@ fill.classes = fill.classes || {};
     plugin.prototype._registerEventListeners = function(){
         if (this._config.create)
             this._el.on("fillcreate.fill-internal", this._config.create);
+        if (this._config.resize)
+            this._el.on("fillresize.fill-internal", this._config.resize);
         if (this._config.destroy)
             this._el.on("filldestroy.fill-internal", this._config.destroy);
     };
@@ -67,6 +69,7 @@ fill.classes = fill.classes || {};
 
         this._el.off("fillcreate.fill-internal");
         this._el.off("filldestroy.fill-internal");
+        this._el.off("fillresize.fill-internal");
     };
 
     fill.classes.FillPlugin = plugin;
