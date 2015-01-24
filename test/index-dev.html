@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Fill Demo</title>
-        <link rel="stylesheet" href="css/demo.css">
-    </head>
-    <body>
-        <div id="fill-main" class="fill-container">
-            <div class="fill-component" data-fill="row: 0; col: 0"><label>Upper left</label></div>
-            <div class="fill-component" data-fill="row: 0; col: 1"><label>Upper center</label></div>
-            <div class="fill-component" data-fill="row: 2; col: 0; colSpan: 3"><label>Lower row</label></div>
-            <div class="fill-component" data-fill="row: 0; col: 2; rowSpan: 2"><label>Column</label></div>
-            <div class="fill-component" data-fill="row: 0; col: 3; rowSpan: *"><label>Right Column</label></div>
-            <div class="fill-component" data-fill="row: 1; col: 0; colSpan: *"><label>Middle left</label></div>
-        </div>
-        <script type="application/javascript" src="../src/vendor/jquery-1.11.1.min.js"></script>
-        <script type="application/javascript" src="../src/window-resize-listener.js"></script>
-        <script type="application/javascript" src="../src/fill-component.js"></script>
-        <script type="application/javascript" src="../src/cell-size-calculator.js"></script>
-        <script type="application/javascript" src="../src/layout-manager.js"></script>
-        <script type="application/javascript" src="../src/fill.js"></script>
-        <script type="application/javascript" src="../src/fill-jquery-plugin.js"></script>
-        <script>
-            $(document).ready(function(){
-                var fill = $(".fill-container").fill({ padding: "1em" });
-            });
-        </script>
-    </body>
+<head>
+    <title>Fill Development</title>
+    <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+<div id="fill-main" class="fill-container">
+    <div data-fill="row: 0; col: 0; colSpan:2"><button id="remove-btn">Remove</button></div>
+    <div data-fill="row: 1; col: 0"><label></label></div>
+    <div data-fill="row: 1; col: 1; rowSpan: 2"><label></label></div>
+    <div data-fill="row: 2; col: 0; rowSpan:2"><label></label></div>
+    <div data-fill="row: 3; col: 1;"><label></label></div>
+    <div data-fill="row: 4; col: 0; colSpan:2"><label></label></div>
+</div>
+<script type="application/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="application/javascript" src="../src/window-resize-listener.js"></script>
+<script type="application/javascript" src="../src/fill-component.js"></script>
+<script type="application/javascript" src="../src/cell-size-calculator.js"></script>
+<script type="application/javascript" src="../src/layout-manager.js"></script>
+<script type="application/javascript" src="../src/fill.js"></script>
+<script type="application/javascript" src="../src/fill-jquery-plugin.js"></script>
+<script>
+    $(document).ready(function(){
+        var fillEl = $(".fill-container").fill({ padding: "1em" });
+        $("#remove-btn").on('click', function(){
+            fillEl.fill("destroy");
+        });
+    });
+</script>
+</body>
 </html>
