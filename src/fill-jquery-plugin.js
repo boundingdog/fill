@@ -24,11 +24,6 @@ fill.classes = fill.classes || {};
 
         if (this._config.autoRefresh)
             this._resizeHandlerId = fill.classes.WindowResizeListener.addHandler(function(){ self._refresh(); });
-
-        //if (this._config.create) {
-        //    var evt = $.Event('create');
-        //    this._config.create(evt, {});
-        //}
     };
 
     /**
@@ -38,6 +33,8 @@ fill.classes = fill.classes || {};
     plugin.prototype._registerEventListeners = function(){
         if (this._config.create)
             this._el.on("fillcreate.fill-internal", this._config.create);
+        if (this._config.destroy)
+            this._el.on("filldestroy.fill-internal", this._config.destroy);
     };
 
     /**
@@ -61,11 +58,15 @@ fill.classes = fill.classes || {};
         //1. Remove the window resize handler (if it was applied)
         //2. Call destroy on the layout manager which will then call destroy on all the fill component DOM elements
         //3. Delete the layout manager, just because...
+        //4. Clean up any event listeners we added
         if (this._resizeHandlerId)
             fill.classes.WindowResizeListener.removeHandler(this._resizeHandlerId);
 
         this._layoutManager.destroy();
         delete this._layoutManager;
+
+        this._el.off("fillcreate.fill-internal");
+        this._el.off("filldestroy.fill-internal");
     };
 
     fill.classes.FillPlugin = plugin;

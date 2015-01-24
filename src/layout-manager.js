@@ -239,6 +239,9 @@ fill.classes = fill.classes || {};
             this._el.attr("style", this._origStyle);
         else
             this._el.removeAttr("style");
+
+        //Fire off an event letting anyone listening that the layout has been removed
+        this._el.trigger("filldestroy", { });
     };
 
     fill.classes.LayoutManager = layoutManager;
