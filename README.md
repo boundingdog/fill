@@ -66,8 +66,16 @@ Padding may be added to the layout providing a uniform gap between all the defin
     //Applies the Fill plugin to the #foo-parent element
     $("#foo-parent").fill({ padding : "10px"});
 ````
+
+Padding may also be defined in the CSS using the ````.fill-padding```` class. Padding set in JavaScript will always override values set in CSS
+
+````css
+.fill-padding{
+    padding: 1em;
+}
+````
+
 * _Currently the padding option may only be supplied when Fill is first applied to a layout._
-* _Future versions will enable a padding setting via CSS_
 
 Call the plugin's ````refresh```` function if the layout has changed (section added / removed / etc) after Fill has been initialized:
 
