@@ -12,7 +12,7 @@
   },
   "name": "fill",
   "title": "Fill",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A lightweight JavaScript layout library.",
   "gitUrl" : "https://github.com/boundingdog/fill",
   "author": {
