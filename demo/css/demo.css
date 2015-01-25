@@ -1,0 +1,66 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #DDD;
+}
+
+.fill-container {
+    width: 100%;
+    height: 100%;
+}
+
+.fill-container .fill-region-wrapper {
+    height: 100%;
+    background-color: white;
+    border: 1px solid #CCC;
+}
+
+/**
+ * Demo page
+ */
+
+/** Header & Footer rows **/
+#fill-demo .fill-row-0, #fill-demo .fill-row-3{
+    height: 4em;
+}
+/** Left-hand Nav column **/
+#fill-demo .fill-col-0{
+    width: 25%;
+}
+/** Right-hand aside column **/
+#fill-demo .fill-col-2{
+    width: 15em;
+}
+/** Right-hand aside column **/
+#fill-demo .fill-row-1{
+    height: 8em;
+}
+
+#fill-demo label{
+    display: block;
+    text-align: center;
+    height: 100%;
+}
+
+#fill-demo label::before {
+    content: "";
+    display: block;
+    height: 45%;
+}
+
+/**
+ * Devlopment page
+ */
+#fill-dev .fill-row-0, #fill-dev .fill-row-3{
+    height: 6em;
+}
+
+#fill-dev .fill-col-0 {
+    width: 25em;
+}
+
+#fill-dev .fill-row-1 {
+    height: 50%;
+}

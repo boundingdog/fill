@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fill Development</title>
+    <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+<div id="fill-dev" class="fill-container">
+    <header data-fill="row: 0; col: 0; colSpan:3"><label></label></header>
+    <nav data-fill="row: 1; col: 0; rowSpan:2"><label></label></nav>
+    <section data-fill="row: 1; col: 1"><label></label></section>
+    <section data-fill="row: 2; col: 1"><label></label></section>
+    <aside data-fill="row: 1; col: 2; rowSpan:2"><label></label></aside>
+    <footer data-fill="row: 3; col: 0; colSpan:3"><label></label></footer>
+</div>
+<script type="application/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type="application/javascript" src="../src/window-resize-listener.js"></script>
+<script type="application/javascript" src="../src/region.js"></script>
+<script type="application/javascript" src="../src/cell-size-calculator.js"></script>
+<script type="application/javascript" src="../src/layout-manager.js"></script>
+<script type="application/javascript" src="../src/fill.js"></script>
+<script type="application/javascript" src="../src/fill-jquery-plugin.js"></script>
+<script>
+    $(document).ready(function () {
+        function displayDimension(index, el){
+            var jEl = $(el);
+            $("label", jEl).text(jEl.width() + "x" + jEl.height());
+        };
+
+        $(".fill-container").fill({
+            padding: "1em",
+            create: function(evt, ui){
+                $(".fill", this).each(displayDimension);
+                $(this).css("visibility", "visible");
+            },
+            resize: function(evt, ui){
+                displayDimension(0, evt.target);
+            }
+        });
+    });
+</script>
+</body>
+</html>

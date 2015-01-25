@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fill Demo</title>
+        <link rel="stylesheet" href="css/demo.css">
+    </head>
+    <body>
+        <div id="fill-demo" class="fill-container">
+            <header data-fill="row: 0; col: 0; colSpan:3"><label></label></header>
+            <nav data-fill="row: 1; col: 0; rowSpan:2"><label></label></nav>
+            <section data-fill="row: 1; col: 1"><label></label></section>
+            <section data-fill="row: 2; col: 1"><label></label></section>
+            <aside data-fill="row: 1; col: 2; rowSpan:2"><label></label></aside>
+            <footer data-fill="row: 3; col: 0; colSpan:3"><label></label></footer>
+        </div>
+        <script type="application/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script type="application/javascript" src="../dist/fill.min.js"></script>
+        <script>
+
+            function displayDimension(index, el){
+                var jEl = $(el);
+                $("label", jEl).text(jEl.width() + "x" + jEl.height());
+            };
+
+            $(".fill-container").fill({
+                                        padding: "1em",
+                                        create: function(evt, ui){
+                                                    $(".fill", this).each(displayDimension);
+                                                    //The fill-container is hidden via CSS to prevent flashing on
+                                                    //slow loading browsers. Once the plugin has applied the layout, we
+                                                    //can show the container.
+                                                    //NOTE: You must use visibility:hidden to hide the container and not
+                                                    //      display: none. Display:none will prevent the plugin from
+                                                    //      calculating regions sizes properly
+                                                    $(this).css("visibility", "visible");
+                                                },
+                                        resize: function(evt, ui){
+                                            //Display the region dimensions in the UI.
+                                            //NOTE: The displayed regions will be the interior dimensions excluding any
+                                            //      padding applied to the layout
+                                            displayDimension(0, evt.target);
+                                        }
+                                });
+        </script>
+    </body>
+</html>
