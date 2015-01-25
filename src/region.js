@@ -131,7 +131,7 @@ fill.classes = fill.classes || {};
             this.el.trigger("fillresize", data);
         }
 
-        console.log("Row=" + this._properties.row + " Col=" + this._properties.col + " Size=" + width+"x" + height);
+        //console.log("Row=" + this._properties.row + " Col=" + this._properties.col + " Size=" + width+"x" + height);
     };
 
     /**

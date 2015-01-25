@@ -37,7 +37,6 @@ fill.classes = fill.classes || {};
 
     /**
      * TODO comment
-     * TODO calc width or height only to optimize?
      */
     calculator.prototype.calculate = function(width, height){
         if (0<width)

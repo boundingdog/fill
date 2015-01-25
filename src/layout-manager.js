@@ -33,7 +33,8 @@ fill.classes = fill.classes || {};
 
         //Calculate the sizes of rows and columns based on the current container dimensions and then
         //render the layout.
-        this._cellCalculator.calculate(this._width, this._height);
+        this._cellCalculator.calculate(this._width - this._config.pixelPadding,
+                                        this._height-this._config.pixelPadding);
         this._renderLayout();
 
         //Fire off an event letting anyone listening that the layout has been applied
@@ -106,17 +107,18 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._renderLayout = function(){
-        var region, x, y, regionWid, regionHt, args, pixelPadding, padding;
+        var region, x, y, regionWid, regionHt, args, pixelPadding, halfPadding, padding;
 
         //Skip out of this function if there's nothing in the grid
         if (!this._grid || 0===this._grid.length)
             return(0);
 
         pixelPadding = this._config.pixelPadding;
+        halfPadding = pixelPadding/2;
 
-        y = 0;
+        y = halfPadding;
         for(var row=0; row<this._grid.length; row++){
-            x = 0;
+            x = halfPadding;
             for(var col=0; col<this._grid[row].length; col++) {
 
                 //Grab a reference to the next region. Not all spaces in the grid will be populated (because of
@@ -138,8 +140,8 @@ fill.classes = fill.classes || {};
 
                 args = { top: y+"px",
                     left: x +"px",
-                    width : (regionWid - pixelPadding - (0===col ? pixelPadding : 0) ) + "px",
-                    height: (regionHt - pixelPadding - (0===row ? pixelPadding : 0)) +"px" };
+                    width : (regionWid - pixelPadding ) + "px",
+                    height: (regionHt - pixelPadding) +"px" };
 
                 //If this region is a right or bottom edge, remove the width/height and set the
                 //right / bottom properties. This mimimizes the effect of an incorrectly reported
@@ -160,8 +162,8 @@ fill.classes = fill.classes || {};
                     //as a whole because that would result in the internal margins being 2x the size of the borders on
                     //the edges. So add a padding to the right and bottom side of every component. Also add a top
                     //padding if the component is in the first row and a left padding if in the first col
-                    padding = (0===row ? pixelPadding : 0) + "px " + pixelPadding + "px "; //Top and Right padding
-                    padding += pixelPadding + "px " + (0===col ? pixelPadding : "0") + "px"; //Bottom and Left padding
+                    padding = halfPadding + "px " + halfPadding + "px "; //Top and Right padding
+                    padding += halfPadding + "px " + halfPadding + "px"; //Bottom and Left padding
                     args.padding = padding;
                 }
                 //alert(JSON.stringify(args));
@@ -204,9 +206,8 @@ fill.classes = fill.classes || {};
         newHt = this._el.height();
 
         if (newWid !== this._width || newHt !== this._height) {
-
-            this._cellCalculator.calculate(newWid !== this._width ? newWid : -1,
-                newHt !== this._height ? newHt : -1);
+            this._cellCalculator.calculate(newWid !== this._width ?  (newWid - this._config.pixelPadding) : -1,
+                                            newHt !== this._height ? (newHt-this._config.pixelPadding) : -1);
 
             this._width = newWid;
             this._height = newHt;
