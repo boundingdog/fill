@@ -182,6 +182,10 @@ fill.classes = fill.classes || {};
      */
     layoutManager.prototype._getPaddingInPixels = function(padding){
         var tempEl, pixel = padding;
+
+        //First check the supplied padding value. This will have been supplied in the JS options
+        //when the plugin was applied to the element. If a padding was not supplied in the options
+        //then check to see if a padding was defined in the CSS via the fill-padding class
         if("string" === typeof(padding)){
             //If the value was already supplied as pixels, just parse the string and return the value
             //as an integer
@@ -194,6 +198,15 @@ fill.classes = fill.classes || {};
                 pixel = tempEl.width();
                 tempEl.remove();
             }
+        } else {
+            tempEl = $("<div style='position:absolute;visible:visible;' class='fill-padding'></div>").appendTo(this._el);
+            if (tempEl.outerWidth() === tempEl.outerHeight()) {
+                pixel = Math.floor(tempEl.outerWidth() / 2);
+            } else {
+                console.warn("Fill layout manager does not support different vertical and horizontal paddings.");
+                pixel = 0;
+            }
+            tempEl.remove();
         }
         return(pixel);
     };
