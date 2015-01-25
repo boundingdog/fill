@@ -83,7 +83,37 @@ Call the plugin's ````refresh```` function if the layout has changed (section ad
     //Updates the layout based on the currently visible fill components
     $("#foo-parent").fill("refresh");
 ````
+##### Events
 
+Fill has three events developers may listen for to take action when significant changes occur in the plugin: ````create````,
+````destroy````, and ````resize````. To register listeners to these events, developers may pass in callbacks when they first apply
+ the plugin to the DOM element:
+
+ ````javascript
+     $("#fill-parent").fill({
+                                  create: function(evt, ui){
+                                      ....
+                                  },
+                                  resize: function(evt, ui){
+                                      ....
+                                  },
+                                  destroy: function(evt, ui){
+                                      ....
+                                  }
+                             });
+ ````
+
+ Developers may also listen to the events using the standard jQuery event handling approach:
+
+  ````javascript
+      $("#fill-parent").on("fillcreate", function(evt, ui) { ... });
+      $("#fill-parent").on("fillresize", function(evt, ui) { ... });
+      $("#fill-parent").on("filldestroy", function(evt, ui) { ... });
+  ````
+
+The supplied ````ui```` parameter in the ````create```` and ````destroy```` events will always be an empty object. The
+  ````ui```` object in the ````resize```` event will contain the new and old dimensions of the region that is changing size.
+  
 ##### RequireJS
 Fill may be loaded via RequireJS using the shim feature. Add an entry for Fill in the requirejs.config shim section as shown below. This will set jQuery as a dependency for the Fill plguin.
 
