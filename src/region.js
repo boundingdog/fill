@@ -50,9 +50,7 @@ fill.classes = fill.classes || {};
         //Wrap the fill region element in a div. This will allow us to apply padding to the regions and still make
         //it easy for the user to stylize the original element. Borders, for example would be applied on the outside edges
         //of the padding (negating the purpose of the padding) if we don't do this wrapping.
-        this.el.wrapInner("<div class='fill-region-wrapper " + contentClass + "'></div>").children().first().css( { "-webkit-box-sizing": "border-box",
-                                                                                                    "-moz-box-sizing": "border-box",
-                                                                                                    "box-sizing" : "border-box" });
+        this.el.wrapInner("<div class='fill-region-wrapper " + contentClass + "'></div>");
     };
 
     /**
