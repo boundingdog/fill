@@ -27,16 +27,17 @@ module.exports = function(grunt) {
         banner: '<%= banner %>',
         mangle: false,
         compress: true,
-        sourceMap : true
+        sourceMap : true,
+        sourceMapIncludeSources : true
       },
       dist: {
-        src: [	'<%= pkg.srcDir %>/region.js',
-		        '<%= pkg.srcDir %>/window-resize-listener.js',
-        		'<%= pkg.srcDir %>/cell-size-calculator.js',
-		        '<%= pkg.srcDir %>/layout-manager.js',
-        		'<%= pkg.srcDir %>/fill-jquery-plugin.js',
-        		'<%= pkg.srcDir %>/fill.js'],
-        dest: '<%= pkg.distDir %><%= pkg.name %>.min.js'
+          src: ['<%= pkg.srcDir %>/region.js',
+              '<%= pkg.srcDir %>/window-resize-listener.js',
+              '<%= pkg.srcDir %>/cell-size-calculator.js',
+              '<%= pkg.srcDir %>/layout-manager.js',
+              '<%= pkg.srcDir %>/fill-jquery-plugin.js',
+              '<%= pkg.srcDir %>/fill.js'],
+          dest: '<%= pkg.distDir %><%= pkg.name %>.min.js'
       }
     }
   });
