@@ -10,6 +10,8 @@ fill.classes = fill.classes || {};
         this._init(options);
     };
 
+    region.prototype.type = "Region";
+
     /**
      * Initializes the Region which is pretty much just merging the
      * supplied option set with the defaults
@@ -17,7 +19,9 @@ fill.classes = fill.classes || {};
      * @private
      */
     region.prototype._init = function(options){
-        var str, contentClass, defaults;
+        var str, val, contentClass, defaults;
+
+        this._computed = {};
 
         //Save off the original style attributes so we can reset things properly if
         //destroy is called
@@ -36,7 +40,10 @@ fill.classes = fill.classes || {};
         if (str) {
             while(null !== (match = DATA_REGEX.exec(str))){
                 if (3===match.length){
-                    this._properties[match[1]] = parseInt(match[2], 10);
+                    val = match[2];
+                    if (!isNaN(val))
+                        val = parseInt(val, 10);
+                    this._properties[match[1]] = val;
                 }
             }
         }
@@ -57,10 +64,20 @@ fill.classes = fill.classes || {};
      * Property getter
      */
     region.prototype.get = function(name){
-
-        if (typeof this._properties[name] !== 'undefined')
+        if (typeof this._computed[name] !== 'undefined')
+            return(this._computed[name]);
+        else if (typeof this._properties[name] !== 'undefined')
             return(this._properties[name]);
         return(null);
+    };
+
+    /**
+     * Property setter
+     * @param name
+     * @param value
+     */
+    region.prototype.setComputed = function(name, value){
+        this._computed[name] = value;
     };
 
     /**

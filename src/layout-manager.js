@@ -46,7 +46,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._buildLayout = function(){
-        var regions, region, row, col, grid, rows, colCnt;
+        var regions, region, row, col, span, grid, rows, colCnt, tmp;
 
         this._width = this._el.width();
         this._height = this._el.height();
@@ -92,12 +92,56 @@ fill.classes = fill.classes || {};
             this._grid[row] = new Array(colCnt);
             for(var col in grid[row]){
                 region = grid[row][col];
-                region.setEdges(0==row, //Top
-                                (col - 1 + region.get("colSpan"))==(colCnt-1), //Right
-                                (row - 1 + region.get("rowSpan"))==(rows.length-1), //Bottom
-                                0==col); //Left
-
                 this._grid[row][col] = region;
+
+                //Mark off the cells in the grid where this region will expand to
+                span = region.get("colSpan");
+                if (!isNaN(span) && 1<span){
+                    for(var i=col+1; i<col+span; i++){
+                        this._grid[row][i] = true;
+                    }
+                }
+            }
+        }
+        //Iterate the grid again and calculate col/row spans for wildcards and assign edges to the regions
+        for(var row=0; row<this._grid.length; row++) {
+
+            for(var col=0; col<this._grid[row].length; col++) {
+                region = this._grid[row][col];
+                if (region && region.type && "Region" === region.type) {
+
+                    if ("*"===region.get("colSpan"))
+                    {
+                        span = 1;
+                        for(var i=col+1; i<this._grid[row].length; i++) {
+                            tmp = this._grid[row][i];
+                            //alert(this._grid[row][i]);
+                            //if (tmp && ((tmp.type && "Region" === tmp.type) || "*" === tmp))
+                            if (undefined !== tmp)
+                                break;
+                            span++;
+                            this._grid[row][i] = true;
+                        }
+                        region.setComputed("colSpan", span);
+                    }
+                    if ("*"===region.get("rowSpan"))
+                    {
+                        span = 1;
+                        for(var i=row+1; i<this._grid.length; i++) {
+                            tmp = this._grid[i][col];
+                            if (undefined !== tmp)
+                                break;
+                            span++;
+                            this._grid[i][col] = true;
+                        }
+                        region.setComputed("rowSpan", span);
+                    }
+                    //Tag this region as right/left/top/bottom
+                    region.setEdges(0 == row, //Top
+                        (col - 1 + region.get("colSpan")) == (colCnt - 1), //Right
+                        (row - 1 + region.get("rowSpan")) == (rows.length - 1), //Bottom
+                        0 == col); //Left
+                }
             }
         }
     };
@@ -124,7 +168,7 @@ fill.classes = fill.classes || {};
                 //Grab a reference to the next region. Not all spaces in the grid will be populated (because of
                 //multi spanning cols/rows or just left empty). If this is a blank region, skip this loop iteration.
                 region = this._grid[row][col];
-                if (typeof region === "undefined" || null===region) {
+                if (undefined === region || !region.type) {
                     x += this._cellCalculator.getColWidth(col);
                     continue;
                 }
@@ -174,6 +218,30 @@ fill.classes = fill.classes || {};
             }
             y += this._cellCalculator.getRowHeight(row);
         }
+    };
+
+    /**
+     * Returns the colSpan for the region. If the colSpan is numeric, that value will be
+     * returned. If the colSpan is the wildcard ("*"), colSPan will attempt to fill the
+     * row until it meets
+     * @param region
+     * @returns {*}
+     * @private
+     */
+    layoutManager.prototype._getColSpan = function(region){
+        var regionsInRow, colSpan = region.get("colSpan");
+        if ("*"===colSpan){
+            alert("Foo");
+            colSpan = 1;
+            regionsInRow = this._grid[region.get("row")];
+            for(var i=region.get("col")+1; i<regionsInRow.length; i++){
+                if (undefined !== regionsInRow[i] && null!==regionsInRow[i])
+                    break;
+                colSpan++;
+            }
+            alert(colSpan);
+        }
+        return(colSpan);
     };
 
     /**
