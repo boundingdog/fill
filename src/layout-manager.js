@@ -33,8 +33,9 @@ fill.classes = fill.classes || {};
 
         //Calculate the sizes of rows and columns based on the current container dimensions and then
         //render the layout.
-        this._cellCalculator.calculate(this._width - this._config.pixelPadding,
-                                        this._height-this._config.pixelPadding);
+        this._cellCalculator.calculate(this._width,
+                                        this._height,
+                                        this._config.pixelPadding);
         this._renderLayout();
 
         //Fire off an event letting anyone listening that the layout has been applied
@@ -115,8 +116,6 @@ fill.classes = fill.classes || {};
                         span = 1;
                         for(var i=col+1; i<this._grid[row].length; i++) {
                             tmp = this._grid[row][i];
-                            //alert(this._grid[row][i]);
-                            //if (tmp && ((tmp.type && "Region" === tmp.type) || "*" === tmp))
                             if (undefined !== tmp)
                                 break;
                             span++;
@@ -144,6 +143,10 @@ fill.classes = fill.classes || {};
                 }
             }
         }
+
+        //Have the cell calculator preprocess the defined cells to determine which have widths/heights assigned in
+        //the CSS
+        this._cellCalculator.preProcessCells();
     };
 
     /**
@@ -151,41 +154,44 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._renderLayout = function(){
-        var region, x, y, regionWid, regionHt, args, pixelPadding, halfPadding, padding;
+        var region, x, y, regionWid, regionHt, args, padding, halfPadding, cellSizes;
 
         //Skip out of this function if there's nothing in the grid
         if (!this._grid || 0===this._grid.length)
             return(0);
 
-        pixelPadding = this._config.pixelPadding;
-        halfPadding = pixelPadding/2;
+        padding = this._config.pixelPadding;
+        halfPadding = padding/2;
+        //Have the cell calculator recalc all the cell sizes based off the current height and
+        //width and padding
+        cellSizes = this._cellCalculator.calculate(this._width, this._height, padding);
 
-        y = halfPadding;
+        y = padding;
         for(var row=0; row<this._grid.length; row++){
-            x = halfPadding;
+            x = padding;
             for(var col=0; col<this._grid[row].length; col++) {
 
                 //Grab a reference to the next region. Not all spaces in the grid will be populated (because of
                 //multi spanning cols/rows or just left empty). If this is a blank region, skip this loop iteration.
                 region = this._grid[row][col];
                 if (undefined === region || !region.type) {
-                    x += this._cellCalculator.getColWidth(col);
+                    x += cellSizes.cols[col] + padding;
                     continue;
                 }
 
-                regionWid = this._cellCalculator.getColWidth(col);
+                regionWid = cellSizes.cols[col];
                 for(var tmp = col+1; tmp<col+region.get("colSpan"); tmp++) {
-                    regionWid += this._cellCalculator.getColWidth(tmp);
+                    regionWid += cellSizes.cols[tmp] + padding;
                 }
-                regionHt = this._cellCalculator.getRowHeight(row);
+                regionHt = cellSizes.rows[row];
                 for(var tmp = row+1; tmp<row+region.get("rowSpan"); tmp++) {
-                    regionHt += this._cellCalculator.getRowHeight(tmp);
+                    regionHt += cellSizes.rows[tmp] + padding;
                 }
 
                 args = { top: y+"px",
                     left: x +"px",
-                    width : (regionWid - pixelPadding ) + "px",
-                    height: (regionHt - pixelPadding) +"px" };
+                    width : regionWid + "px",
+                    height: regionHt +"px" };
 
                 //If this region is a right or bottom edge, remove the width/height and set the
                 //right / bottom properties. This mimimizes the effect of an incorrectly reported
@@ -199,49 +205,14 @@ fill.classes = fill.classes || {};
                     delete args.height;
                     args.bottom = this._height - (y + regionHt) + "px";
                 }
-
-                if (0!==pixelPadding)
-                {
-                    //Add a uniform padding to all the components. We can't simply add a single padding to the component
-                    //as a whole because that would result in the internal margins being 2x the size of the borders on
-                    //the edges. So add a padding to the right and bottom side of every component. Also add a top
-                    //padding if the component is in the first row and a left padding if in the first col
-                    padding = halfPadding + "px " + halfPadding + "px "; //Top and Right padding
-                    padding += halfPadding + "px " + halfPadding + "px"; //Bottom and Left padding
-                    args.padding = padding;
-                }
                 //alert(JSON.stringify(args));
                 region.el.css(args);
                 region.fireResizeEvent();
 
-                x += this._cellCalculator.getColWidth(col);
+                x += cellSizes.cols[col] + padding;
             }
-            y += this._cellCalculator.getRowHeight(row);
+            y += cellSizes.rows[row] + padding;
         }
-    };
-
-    /**
-     * Returns the colSpan for the region. If the colSpan is numeric, that value will be
-     * returned. If the colSpan is the wildcard ("*"), colSPan will attempt to fill the
-     * row until it meets
-     * @param region
-     * @returns {*}
-     * @private
-     */
-    layoutManager.prototype._getColSpan = function(region){
-        var regionsInRow, colSpan = region.get("colSpan");
-        if ("*"===colSpan){
-            alert("Foo");
-            colSpan = 1;
-            regionsInRow = this._grid[region.get("row")];
-            for(var i=region.get("col")+1; i<regionsInRow.length; i++){
-                if (undefined !== regionsInRow[i] && null!==regionsInRow[i])
-                    break;
-                colSpan++;
-            }
-            alert(colSpan);
-        }
-        return(colSpan);
     };
 
     /**
@@ -287,14 +258,10 @@ fill.classes = fill.classes || {};
         newHt = this._el.height();
 
         if (newWid !== this._width || newHt !== this._height) {
-            this._cellCalculator.calculate(newWid !== this._width ?  (newWid - this._config.pixelPadding) : -1,
-                                            newHt !== this._height ? (newHt-this._config.pixelPadding) : -1);
-
             this._width = newWid;
             this._height = newHt;
+            this._renderLayout();
         }
-        //Re-render
-        this._renderLayout();
     };
 
     /**
