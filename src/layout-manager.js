@@ -31,11 +31,6 @@ fill.classes = fill.classes || {};
 
         this._buildLayout();
 
-        //Calculate the sizes of rows and columns based on the current container dimensions and then
-        //render the layout.
-        this._cellCalculator.calculate(this._width,
-                                        this._height,
-                                        this._config.pixelPadding);
         this._renderLayout();
 
         //Fire off an event letting anyone listening that the layout has been applied
@@ -47,14 +42,17 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._buildLayout = function(){
-        var regions, region, row, col, span, grid, rows, colCnt, tmp;
+        var regions, region, row, col, span, grid, rows, colCnt, tmp, cellIndices;
 
         this._width = this._el.width();
         this._height = this._el.height();
-        this._dimensions = { rows : { }, cols : { } };
 
-        grid = {};
+        grid = [];
+        cellIndices = [];
         colCnt = 0;
+        //Use jQuery to find all the regions defined in our fill container. Then iterated the found list of regions and
+        //dump them into a 2 dimension array indexed by row and column. Also keep track of the max column count while
+        //we're at it.
         regions = $("> [data-fill]", this._el);
         for(var i=0; i<regions.length; i++){
 
@@ -66,87 +64,65 @@ fill.classes = fill.classes || {};
                 continue;
             }
 
-            //TODO comments
-            if (!grid[row]) {
-                grid[row] = {};
-            }
-
+            if (!grid[row])
+                grid[row] = [];
             if (grid[row][col]){
                 console.warn("Duplicate region defined for fill region ("+row + "," + col +"). Region will be skipped.");
                 continue;
             }
 
-            this._cellCalculator.addCell(row, col);
             grid[row][col] = region;
-
-            //Increment the grid's max column count if the # of columns in this row is greater than any existing row.
-            if (colCnt < Object.keys(grid[row]).length)
-                colCnt++;
-        }
-
-        //TODO sort row and cols to make sure they are in correct order
-        //TODO normalize the row / cols in case the user doesn't specify them in incremental order
-        //Convert the local grid variable from an Object to a multidimensional array
-        rows = Object.keys(grid);
-        this._grid = new Array(rows);
-        for(var row in grid){
-            this._grid[row] = new Array(colCnt);
-            for(var col in grid[row]){
-                region = grid[row][col];
-                this._grid[row][col] = region;
-
-                //Mark off the cells in the grid where this region will expand to
-                span = region.get("colSpan");
-                if (!isNaN(span) && 1<span){
-                    for(var i=col+1; i<col+span; i++){
-                        this._grid[row][i] = true;
-                    }
+            //If this region spans multiple columns, mark them off now.
+            //TODO comments about spanning multiple rows
+            span = region.get("colSpan");
+            if (!isNaN(span) && 1<span){
+                for(var extraCol=col+1; extraCol<col+span; extraCol++){
+                    grid[row][extraCol] = true;
                 }
             }
+            cellIndices.push([row, col]);
+            colCnt = Math.max(col+1, colCnt);
         }
-        //Iterate the grid again and calculate col/row spans for wildcards and assign edges to the regions
-        for(var row=0; row<this._grid.length; row++) {
 
-            for(var col=0; col<this._grid[row].length; col++) {
-                region = this._grid[row][col];
-                if (region && region.type && "Region" === region.type) {
+        //Now that the initial gird has been built, iterate the cells again and expand out the cells with wildcard
+        //spans
+        for(var i=0; i<grid.length; i++){
+            for (var j=0; j<colCnt; j++){
+                region = grid[i][j];
 
-                    if ("*"===region.get("colSpan"))
-                    {
+                if (region && region.type){
+                     //Expand out rows first
+                     if("*" === region.get("rowSpan")) {
+                         span = 1;
+                         for (var tmp = i + 1; tmp < grid.length; tmp++) {
+                             if (grid[tmp][j])
+                                 break;
+
+                             grid[tmp][j] = true;
+                             span++;
+                         }
+                         region.setComputed("rowSpan", span);
+                     }
+                    //Next expand out cols...complicated huh?
+                    if("*" === region.get("colSpan")) {
                         span = 1;
-                        for(var i=col+1; i<this._grid[row].length; i++) {
-                            tmp = this._grid[row][i];
-                            if (undefined !== tmp)
+                        for (var tmp = j + 1; tmp < colCnt; tmp++) {
+                            if (grid[i][tmp])
                                 break;
+
+                            grid[i][tmp] = true;
                             span++;
-                            this._grid[row][i] = true;
                         }
                         region.setComputed("colSpan", span);
                     }
-                    if ("*"===region.get("rowSpan"))
-                    {
-                        span = 1;
-                        for(var i=row+1; i<this._grid.length; i++) {
-                            tmp = this._grid[i][col];
-                            if (undefined !== tmp)
-                                break;
-                            span++;
-                            this._grid[i][col] = true;
-                        }
-                        region.setComputed("rowSpan", span);
-                    }
-                    //Tag this region as right/left/top/bottom
-                    region.setEdges(0 == row, //Top
-                        (col - 1 + region.get("colSpan")) == (colCnt - 1), //Right
-                        (row - 1 + region.get("rowSpan")) == (rows.length - 1), //Bottom
-                        0 == col); //Left
                 }
             }
         }
 
+        this._grid = grid;
         //Have the cell calculator preprocess the defined cells to determine which have widths/heights assigned in
         //the CSS
-        this._cellCalculator.preProcessCells();
+        this._cellCalculator.createCells(cellIndices);
     };
 
     /**
