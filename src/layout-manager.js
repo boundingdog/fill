@@ -115,6 +115,12 @@ fill.classes = fill.classes || {};
                         }
                         region.setComputed("colSpan", span);
                     }
+
+                    //Tag this region as right/left/top/bottom
+                    region.setEdges(0 == i, //Top
+                        (j - 1 + region.get("colSpan")) == (colCnt - 1), //Right
+                        (i - 1 + region.get("rowSpan")) == (grid.length - 1), //Bottom
+                        0 == j); //Left
                 }
             }
         }
