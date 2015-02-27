@@ -47,6 +47,8 @@ CSS may be used to set sections' widths and heights using absolute or percentage
     width: 50%;
   }
 ````
+> As of version 0.2.0, supplied widths/heights determine the interior dimensions of a fill region. Percentage values are calculated based on view dimensions minus any paddings set.
+
 Include the parent container in the CSS rule to set different sizes for the same row or column index. This is only required if you have multiple ````fill```` regions on the same page.
 
 ##### API
