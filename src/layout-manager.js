@@ -42,7 +42,7 @@ fill.classes = fill.classes || {};
      * @private
      */
     layoutManager.prototype._buildLayout = function(){
-        var regions, region, row, col, span, grid, rows, colCnt, tmp, cellIndices;
+        var regions, region, row, col, span, grid, colCnt, tmp, cellIndices;
 
         this._width = this._el.width();
         this._height = this._el.height();

@@ -94,7 +94,7 @@ fill.classes = fill.classes || {};
      * TODO comment
      */
     calculator.prototype.calculate = function(width, height, padding){
-        var cell, fillCells, size, remaining, cellSizes, sizeMap = { cols: {}, rows: {}}, self = this; //TODO
+        var fillCells, remaining, cellSizes;
 
         remaining = width - (this._colCnt+1)*padding;
         fillCells = [];
