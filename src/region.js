@@ -27,7 +27,7 @@ fill.classes = fill.classes || {};
         //destroy is called
         this._origStyle = this.el.attr("style");
 
-        this.el.css( { "position" : "absolute" });
+        this.el.css( { "position" : "absolute", margin:0, padding:0 });
 
         defaults = { row : -1, col: -1,
                         rowSpan: 1, colSpan: 1,
